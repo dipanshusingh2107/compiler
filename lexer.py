@@ -155,6 +155,9 @@ class lexer():
                 pos = self.getNumberEnd()
                 lexeme.append(TokenType.NUMBER)
                 self.posIncrement(step = pos-self.currPos+1)
+            else:
+                lexeme.append("ERROR")
+                break
 
 
         return lexeme
@@ -165,7 +168,8 @@ def main():
     for i in lex.getLexeme():
         print(i)
 
-main()
+if __name__ == "__main__":
+    main()
 
 
 
