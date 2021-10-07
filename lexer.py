@@ -16,9 +16,41 @@ class lexer():
             self.posIncrement()
     def findNext(self,findC,startPos):
         for i in range(startPos , self.length):
-            if i == findC:
+            if self.input[i] == findC:
                 return i
         return None
+        
+    def getIdentifierEnd(self):
+        pos = self.currPos-1
+        if not self.currChar().isalpha():
+            return None
+
+        while(pos < self.length):
+            if self.input[pos+1].isalnum():
+                pos = pos+1
+            else:
+                return pos
+            
+
+        return min(pos,self.length-1)
+
+    
+
+    def getNumberEnd(self):
+        pos = self.currPos -1
+        if not self.currChar().isdigit():
+            return None
+
+        while pos < self.length:
+            if self.input[pos+1].isdigit():
+                pos = pos+1
+            else:
+                return pos
+            
+
+        return min(pos,self.length-1)
+
+    
 
     def endOfFile(self):
         if self.currPos >= len(self.input):
@@ -37,6 +69,14 @@ class lexer():
     
             if self.currChar() == " ":
                 self.skipWhiteSpace()
+            elif self.currChar() == "\"":
+                pos = self.findNext("\"" , self.currPos+1)
+                if pos != None:
+                    lexeme.append(TokenType.STRING)
+                    self.posIncrement(step = pos-self.currPos+1)
+                else:
+                    lexeme.append("ERROR")
+                    break
             
             elif self.currSubstring(5) == "PRINT":
                 lexeme.append(TokenType.PRINT)
@@ -105,15 +145,25 @@ class lexer():
             elif self.currChar() == "<":
                 lexeme.append(TokenType.LT)
                 self.posIncrement()
-            
+
+            elif self.currChar().isalpha():
+                pos = self.getIdentifierEnd()
+                lexeme.append(TokenType.IDENT)
+                self.posIncrement(step = pos-self.currPos+1)
+
+            elif self.currChar().isdigit():
+                pos = self.getNumberEnd()
+                lexeme.append(TokenType.NUMBER)
+                self.posIncrement(step = pos-self.currPos+1)
 
 
         return lexeme
 
 
 def main():
-    lex = lexer("+-* == REPEAT")
-    print(lex.getLexeme())
+    lex = lexer("123apple34+-* == REPEAT \"hellloo ")
+    for i in lex.getLexeme():
+        print(i)
 
 main()
 
