@@ -26,41 +26,59 @@ class Parser():
         print("Parsing Completed")
     
     def nl(self):       #some error here this is crap
-        while(self.currToken == TokenType.NEWLINE):
+        flag = False
+        while(self.currToken() == TokenType.NEWLINE):
             print("NEW LINE")
             self.increasePos()
+            flag = True
+        return flag
 
     def statements(self):
-        if self.currToken == TokenType.PRINT:
+        if self.nl():
+            return True
+
+        if self.currToken() == TokenType.EOF:
+            self.increasePos()
+            return True
+
+        if self.currToken() == TokenType.PRINT:
             print('STATEMENT PRINT')
             self.increasePos()
-            if self.currToken == TokenType.STRING:
+            if self.currToken() == TokenType.STRING:    #PRINT "STRING"
 
                 self.increasePos()
-                if self.currToken == TokenType.NEWLINE:
+                if self.currToken() == TokenType.NEWLINE:
                     self.nl()
                     return True
                 else:
-                    sys.exit('SYNTAX ERROR')
-            else:
-                pass    # here will come the part for expression
+                    sys.exit('SYNTAX ERROR New line not found after string')
+            else:           #PRINT EXPRESSION
+                if self.expression() == False:
+                    sys.exit('SYNTAX ERROR NO Expression or string found after PRINT')
+                elif self.currToken() != TokenType.NEWLINE:
+                    sys.exit('SYNTAX ERROR New line not found after Expression')
+        else:
+            print(self.currToken())
+            sys.exit('SYNTAX ERROR Statement is not a print statement')
     
 
     def expression(self):
+        print("CHECKING EXPRESSION")
         if self.term():
             while self.currToken() == '-' or self.currToken() == '+':
                 self.increasePos()
                 if self.term() == False:
-                    sys.exit('SYNTAX ERROR')
+                    sys.exit('SYNTAX ERROR NOTHING FOUND AFTER +/-')
                     return False
             return True
         else:
-            sys.exit('SYNTAX ERROR')
+            sys.exit('SYNTAX ERROR NOT AN EXPRESSION FIRST TOKEN IS NOT TERM')
             return False
 
 
 
     def primary(self):
+        print("CHECKING PRIMARY")
         if self.currToken == TokenType.IDENT:
             self.increasePos()
             print("IDENT")
@@ -74,6 +92,7 @@ class Parser():
             return False    #useless part execution terminates
 
     def unary(self):
+        print("CHECKING UNARY")
         if(self.primary()):
             self.increasePos()
             return True
@@ -89,6 +108,7 @@ class Parser():
             return False
 
     def term(self):
+        print("CHECKING TERM")
         if self.unary():
             flag = True
             while self.currToken() == '/' or self.currToken() == '*':

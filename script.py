@@ -12,9 +12,13 @@ def main():
 
     lexer = Lexer(data)
 
-    token = lexer.getToken()
-    while token.kind != TokenType.EOF:
-        print(token.kind)
-        token = lexer.getToken()
+    lexeme = lexer.getLexeme()
+    lexeme.append(TokenType.EOF)
+    
+    for token in lexeme:
+        print(token)
+
+    parser = Parser(lexeme)
+    parser.program()
 
 main()
