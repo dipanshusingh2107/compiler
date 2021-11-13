@@ -1,5 +1,5 @@
 from tokens import TokenType
-class lexer():
+class Lexer():
     def __init__(self , input):
         self.input = input
         self.length = len(input)
@@ -208,9 +208,9 @@ def main():
     # path = input("Enter file\t")
     file = open('hello.tiny')
     data = ""
-    for i in file.readlines():
-        data+=i
-   
+    data = file.read()
+    data+= '\n'
+
     lex = lexer(data)
     for i in lex.getLexeme():
         print(i)
