@@ -10,6 +10,8 @@ class Parser():
     
     def increasePos(self , step = 1):
         self.currTokenPos+=step
+    def decreasePos(self , step =1):
+        self.currTokenPos-=step
     
     def currToken(self):
         return self.token[self.currTokenPos]
@@ -56,6 +58,7 @@ class Parser():
                 if self.expression() == False:
                     sys.exit('SYNTAX ERROR NO Expression or string found after PRINT')
                 elif self.currToken() != TokenType.NEWLINE:
+                    print(self.currToken())
                     sys.exit('SYNTAX ERROR New line not found after Expression')
         else:
             print(self.currToken())
@@ -65,61 +68,65 @@ class Parser():
     def expression(self):
         print("CHECKING EXPRESSION")
         if self.term():
-            while self.currToken() == '-' or self.currToken() == '+':
+            print("TERM")
+            while self.currToken() == TokenType.MINUS or self.currToken() == TokenType.PLUS:
+                print("+ / -")
                 self.increasePos()
                 if self.term() == False:
                     sys.exit('SYNTAX ERROR NOTHING FOUND AFTER +/-')
                     return False
+                else:
+                    print("Term")
             return True
         else:
             sys.exit('SYNTAX ERROR NOT AN EXPRESSION FIRST TOKEN IS NOT TERM')
             return False
 
+    def term(self):
+        print("CHECKING TERM")
+        if self.unary():
+            while self.currToken() == '/' or self.currToken() == '*':
+                print("*/")
+                self.increasePos()
+                if self.unary() == False:
+                    sys.exit('SYNTAX ERROR NOT UNIARY AFTER / *')
+                    flag = False
+                else:
+                    print("UNIARY")
+            return True
+        else:
+            sys.exit('SYNTAX ERROR')
+            return False
 
+    def unary(self):
+        print("CHECKING UNARY")
+        if(self.primary()):
+            print("PRIMARY")
+            return True
+        elif self.currToken() == TokenType.PLUS or self.currToken() == TokenType.MINUS:
+            print("+/-")
+            self.increasePos()
+            if (self.primary()):
+                print("PRIMARY")
+                return True
+            else:
+                sys.exit('SYNTAX ERROR NOT A UNIARY')
+                return False
+        else:
+            sys.exit('SYNTAX ERROR')
+            return False
 
+    
     def primary(self):
         print("CHECKING PRIMARY")
-        if self.currToken == TokenType.IDENT:
+        if self.currToken() == TokenType.IDENT:
             self.increasePos()
             print("IDENT")
             return True
-        elif self.currToken == TokenType.NUMBER:
+        elif self.currToken() == TokenType.NUMBER:
             self.increasePos()
             print("NUMBER")
             return True
         else:
             sys.exit('SYNTAX ERROR')
             return False    #useless part execution terminates
-
-    def unary(self):
-        print("CHECKING UNARY")
-        if(self.primary()):
-            self.increasePos()
-            return True
-        elif self.currToken() == TokenType.PLUS or self.currToken() == TokenType.MINUS:
-            print(self.currToken())
-            self.increasePos()
-            if (self.primary()):
-                return True
-            else:
-                return False
-        else:
-            sys.exit('SYNTAX ERROR')
-            return False
-
-    def term(self):
-        print("CHECKING TERM")
-        if self.unary():
-            flag = True
-            while self.currToken() == '/' or self.currToken() == '*':
-                self.increasePos()
-                if self.unary() == False:
-                    flag = False
-            
-            if flag == False:
-                sys.exit('SYNTAX ERROR')
-                return False
-            return True
-        else:
-            sys.exit('SYNTAX ERROR')
-            return False

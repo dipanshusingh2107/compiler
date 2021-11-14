@@ -42,3 +42,14 @@ nl ::= '\n'+
 + means one or more of whatever is to the left
 () is just for grouping
 | is a logical or.
+
+
+# Bugs
+
+1)negative number support not available:
+    example: PRINT -123 
+    it is an error
+2) Multiplication and Division Support Not Available:
+    ex: PRINT 3*34 
+    it is an error
+

@@ -10,15 +10,15 @@ def main():
     data = file.read()
     data += '\n'
 
-    lexer = Lexer(data)
+    lexer = Lexer(data) #lexer declared
 
-    lexeme = lexer.getLexeme()
+    lexeme = lexer.getLexeme()  #token taken
     lexeme.append(TokenType.EOF)
     
     for token in lexeme:
         print(token)
 
-    parser = Parser(lexeme)
-    parser.program()
+    parser = Parser(lexeme) 
+    parser.program()    #parsed
 
 main()
