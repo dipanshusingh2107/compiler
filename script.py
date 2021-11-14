@@ -6,7 +6,7 @@ from parser import Parser
 
 
 def main():
-    file = open('test.tiny')
+    file = open('test.sv')
     data = file.read()
     data += '\n'
 
@@ -15,8 +15,8 @@ def main():
     lexeme = lexer.getLexeme()  #token taken
     lexeme.append(TokenType.EOF)
     
-    for token in lexeme:
-        print(token)
+    # for token in lexeme:
+    #     print(token)
 
     parser = Parser(lexeme) 
     parser.program()    #parsed
