@@ -3,18 +3,22 @@ from tokens import TokenType
 import sys
 
 class Parser():
-    def __init__(self , token) :    #Needed tokens from the lexer
+    def __init__(self , token , text) :    #Needed tokens from the lexer
+        self.text = text
         self.token = token
         self.currTokenPos = 0
         self.numberOfTokens = len(token)
+        self.out = ""   #will have the parsed code of emmitter NOT IMPLEMENTED YET
     
     def increasePos(self , step = 1):
         self.currTokenPos+=step
-    def decreasePos(self , step =1):
+    def decreasePos(self , step =1):  #NOT USED
         self.currTokenPos-=step
     
     def currToken(self):
         return self.token[self.currTokenPos]
+    def currText(self):
+        return self.text[self.currTokenPos]
     
     def getToken(self , pos = 0):   #this is also crap
         if self.currTokenPos+pos >= self.numberOfTokens:
@@ -33,6 +37,8 @@ class Parser():
             print("NEW LINE")
             self.increasePos()
             flag = True
+        if flag:
+            self.out+= '\n'
         return flag
 
     def statements(self):
@@ -45,9 +51,12 @@ class Parser():
 
         if self.currToken() == TokenType.PRINT:
             print('STATEMENT PRINT')
+            self.out+= "print("
             self.increasePos()
             if self.currToken() == TokenType.STRING:    #PRINT "STRING"
-
+                print("Token Found " ,self.currToken())
+                self.out+= self.currText()
+                self.out += ")"
                 self.increasePos()
                 if self.currToken() == TokenType.NEWLINE:
                     self.nl()
@@ -57,9 +66,13 @@ class Parser():
             else:           #PRINT EXPRESSION
                 if self.expression() == False:
                     sys.exit('SYNTAX ERROR NO Expression or string found after PRINT')
-                elif self.currToken() != TokenType.NEWLINE:
+
+                self.out+=")"
+
+                if self.currToken() != TokenType.NEWLINE:
                     print("Token Found " ,self.currToken())
                     sys.exit('SYNTAX ERROR New line not found after Expression')
+                    
         else:
             print("Token Found " ,self.currToken())
             sys.exit('SYNTAX ERROR Statement is not a print statement')
@@ -70,6 +83,7 @@ class Parser():
         if self.term():
             while self.currToken() == TokenType.MINUS or self.currToken() == TokenType.PLUS:
                 print("Token Found " ,self.currToken())
+                self.out+= self.currText()
                 self.increasePos()
                 if self.term() == False:
                     sys.exit('SYNTAX ERROR NOTHING FOUND AFTER +/-')
@@ -84,13 +98,14 @@ class Parser():
         if self.unary():
             while self.currToken() == TokenType.SLASH or self.currToken() == TokenType.ASTERISK:
                 print("Token Found " ,self.currToken())
+                self.out+= self.currText()
                 self.increasePos()
                 if self.unary() == False:
                     sys.exit('SYNTAX ERROR NOT UNIARY AFTER / *')
                     flag = False
             return True
         else:
-            sys.exit('SYNTAX ERROR')
+            sys.exit('SYNTAX ERROR TERM NOT FOUND')
             return False
 
     def unary(self):
@@ -99,6 +114,7 @@ class Parser():
             return True
         elif self.currToken() == TokenType.PLUS or self.currToken() == TokenType.MINUS:
             print("Token Found " ,self.currToken())
+            self.out+= self.currText()
             self.increasePos()
             if (self.primary()):
                 return True
@@ -106,7 +122,7 @@ class Parser():
                 sys.exit('SYNTAX ERROR NOT A UNIARY')
                 return False
         else:
-            sys.exit('SYNTAX ERROR')
+            sys.exit('SYNTAX ERROR UNARY NOT FOUND')
             return False
 
     
@@ -114,12 +130,14 @@ class Parser():
         print("CHECKING PRIMARY")
         if self.currToken() == TokenType.IDENT:
             print("Token Found " ,self.currToken())
+            self.out+= self.currText()
             self.increasePos()
             return True
         elif self.currToken() == TokenType.NUMBER:
             print("Token Found " ,self.currToken())
+            self.out+= self.currText()
             self.increasePos()
             return True
         else:
-            sys.exit('SYNTAX ERROR')
+            sys.exit('SYNTAX ERROR PRIMARY NOT FOUND')
             return False    #useless part execution terminates

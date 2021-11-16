@@ -104,114 +104,141 @@ class Lexer():
 
     def getLexeme(self):
         lexeme = []
+        text = []
         while self.endOfFile() == False:
     
             if self.currChar() == " ":
                 self.skipWhiteSpace()
             if self.currChar() == "\n":
                 lexeme.append(TokenType.NEWLINE)
+                text.append("\n")
                 self.posIncrement()
             elif self.currChar() == "\"":
                 pos = self.findNext("\"" , self.currPos+1)
                 if pos != None:
                     lexeme.append(TokenType.STRING)
+                    text.append(self.getSubstring(self.currPos , pos+1))
                     self.posIncrement(step = pos-self.currPos+1)
                 else:
                     lexeme.append("ERROR")
+                    text.append("ERROR")
                     break
             
             elif self.currSubstring(5) == "PRINT":
                 lexeme.append(TokenType.PRINT)
+                text.append("PRINT")
                 self.posIncrement(step = 5)
             elif self.currSubstring(4) == "GOTO":
+                text.append("GOTO")
                 lexeme.append(TokenType.GOTO)
                 self.posIncrement(step = 4)
             elif self.currSubstring(5) == "LABEL":
+                text.append("LABEL")
                 lexeme.append(TokenType.LABEL)
                 self.posIncrement(step = 5)
             elif self.currSubstring(5) == "INPUT":
+                text.append("INPUT")
                 lexeme.append(TokenType.INPUT)
                 self.posIncrement(step = 5)
             elif self.currSubstring(3) == "LET":
                 lexeme.append(TokenType.LET)
+                text.append("LET")
                 self.posIncrement(step = 3)
             elif self.currSubstring(2) == "IF":
                 lexeme.append(TokenType.IF)
+                text.append("IF")
                 self.posIncrement(step = 2)
             elif self.currSubstring(4) == "THEN":
                 lexeme.append(TokenType.THEN)
+                text.append("THEN")
                 self.posIncrement(step = 4)
             elif self.currSubstring(5) == "ENDIF":
                 lexeme.append(TokenType.ENDIF)
+                text.append("ENDIF")
                 self.posIncrement(step = 5)
             elif self.currSubstring(5) == "WHILE":
                 lexeme.append(TokenType.WHILE)
+                text.append("WHILE")
                 self.posIncrement(step = 5)
             elif self.currSubstring(6) == "REPEAT":
                 lexeme.append(TokenType.REPEAT)
+                text.append("REPEAT")
                 self.posIncrement(step = 6)
             elif self.currSubstring(8) == "ENDWHILE":
                 lexeme.append(TokenType.ENDWHILE)
+                text.append("ENDWHILE")
                 self.posIncrement(step = 8)
         
             elif self.currSubstring(2) == "==":
                 lexeme.append(TokenType.EQEQ)
+                text.append("==")
                 self.posIncrement(step = 2)
             elif self.currSubstring(2) == ">=":
                 lexeme.append(TokenType.GTEQ)
+                text.append(">=")
                 self.posIncrement(step = 2)
             elif self.currSubstring(2) == "<=":
                 lexeme.append(TokenType.LTEQ)
+                text.append("<=")
                 self.posIncrement(step = 2)
             
             elif self.currChar() == "+":
                 lexeme.append(TokenType.PLUS)
+                text.append("+")
                 self.posIncrement()
             elif self.currChar() == "-":
                 lexeme.append(TokenType.MINUS)
+                text.append("-")
                 self.posIncrement()
             elif self.currChar() == "*":
                 lexeme.append(TokenType.ASTERISK)
+                text.append("*")
                 self.posIncrement()
             elif self.currChar() == "/":
                 lexeme.append(TokenType.SLASH)
+                text.append("/")
                 self.posIncrement()
             elif self.currChar() == "=":
                 lexeme.append(TokenType.EQ)
+                text.append("=")
                 self.posIncrement()
             elif self.currChar() == ">":
                 lexeme.append(TokenType.GT)
+                text.append(">")
                 self.posIncrement()
             elif self.currChar() == "<":
                 lexeme.append(TokenType.LT)
+                text.append("<")
                 self.posIncrement()
 
             elif self.currChar().isalpha():
                 pos = self.getIdentifierEnd()
                 lexeme.append(TokenType.IDENT)
+                text.append(self.getSubstring(self.currPos , pos+1))
                 self.posIncrement(step = pos-self.currPos+1)
 
             elif self.currChar().isdigit():
                 pos = self.getNumberEnd()
                 lexeme.append(TokenType.NUMBER)
+                text.append(self.getSubstring(self.currPos , pos+1))
                 self.posIncrement(step = pos-self.currPos+1)
             else:
                 lexeme.append("ERROR")
+                text.append("ERROR")
                 break
 
 
-        return lexeme
+        return lexeme , text
 
 
 def main():
-    # lex = lexer("123apple34+-* == REPEAT \"hellloo ")
-    # path = input("Enter file\t")
-    file = open('hello.tiny')
+
+    file = open('test.sv')
     data = ""
     data = file.read()
     data+= '\n'
 
-    lex = lexer(data)
+    lex = Lexer(data)
     for i in lex.getLexeme():
         print(i)
 

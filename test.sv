@@ -1,2 +1,2 @@
-PRINT 123 * 23 / 24 + 13 - 45
+PRINT 2323 + 32 / 3 * 4 + 43 - 23
 PRINT "Helllo world"
