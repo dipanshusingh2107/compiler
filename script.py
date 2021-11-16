@@ -1,8 +1,14 @@
 from lexer import Lexer
 from tokens import TokenType
 from parser import Parser
+import sys , os
 
+def blockPrint():
+    sys.stdout = open(os.devnull, 'w')
 
+# Restore
+def enablePrint():
+    sys.stdout = sys.__stdout__
 
 
 def main():
@@ -16,22 +22,28 @@ def main():
     lexeme , text = lexer.getLexeme()  #token taken
 
     if "ERROR" in lexeme:
-        print("Lexer ERROR")
+        sys.exit("Lexer ERROR")
     
     if len(lexeme) != len(text):
-        print("ERROR LEXEME != TEXT")
+        sys.exit("Error len(Lexer) != len(Text)")
     
-    print(text)
     lexeme.append(TokenType.EOF)
+    text.append("EOF")
     
     # for token in lexeme:
     #     print(token)
 
     parser = Parser(lexeme , text) 
+
+    blockPrint()    #used to supress the output from the parser
     parser.program()    #parsed
+    enablePrint()   #use to enable the print
 
     file = open("output.py" , "w");
     file.write(parser.out)
     file.close()
 
+    os.system("python3 output.py")
+
+    
 main()

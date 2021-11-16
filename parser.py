@@ -128,12 +128,22 @@ class Parser():
     
     def primary(self):
         print("CHECKING PRIMARY")
-        if self.currToken() == TokenType.IDENT:
-            print("Token Found " ,self.currToken())
-            self.out+= self.currText()
+
+        # removing this part as the support for variable 
+        #  is not implemented yet
+
+        # if self.currToken() == TokenType.IDENT:
+        #     print("Token Found " ,self.currToken())
+        #     self.out+= self.currText()
+        #     self.increasePos()
+        #     return True
+
+        #this is for the support of negative numbers
+        if self.currToken() == TokenType.MINUS or self.currToken() == TokenType.PLUS:
+            self.out += self.currText()
             self.increasePos()
-            return True
-        elif self.currToken() == TokenType.NUMBER:
+
+        if self.currToken() == TokenType.NUMBER:
             print("Token Found " ,self.currToken())
             self.out+= self.currText()
             self.increasePos()

@@ -4,7 +4,7 @@ class Lexer():
         self.input = input
         self.length = len(input)
         self.currPos = 0
-
+        
     def currChar(self):
         return self.input[self.currPos]
 
