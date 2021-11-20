@@ -22,17 +22,10 @@ Numbers
 
 program ::= {statement}
 statement ::= "PRINT" (expression | string) nl
-            | "IF" comparison "THEN" nl {statement} "ENDIF" nl
-            | "WHILE" comparison "REPEAT" nl {statement} "ENDWHILE" nl
-            | "LABEL" ident nl
-            | "GOTO" ident nl
-            | "LET" ident "=" expression nl
-            | "INPUT" ident nl
-comparison ::= expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
 expression ::= term {( "-" | "+" ) term}
 term ::= unary {( "/" | "*" ) unary}
-unary ::= ["+" | "-"] primary
-primary ::= number | ident
+unary ::= primary
+primary ::= ["+" | "-"] (number | ident)
 nl ::= '\n'+
 
 # Notation of Grammar
@@ -46,13 +39,18 @@ nl ::= '\n'+
 
 # Bugs
 
-1)negative number support not available:
-    example: PRINT -123 
-    it is an error
-2) Multiplication and Division Support Not Available:
-    ex: PRINT 3*34 
-    it is an error
 
+# Not Supported Grammar
+
+statement ::= "IF" comparison "THEN" nl {statement} "ENDIF" nl
+            | "WHILE" comparison "REPEAT" nl {statement} "ENDWHILE" nl
+            | "LABEL" ident nl
+            | "GOTO" ident nl
+            | "LET" ident "=" expression nl
+            | "INPUT" ident nl
+comparison ::= expression (("==" | "!=" | ">" | ">=" | "<" | "<=") expression)+
+unary ::= ["+" | "-"] primary
+primary ::= number | ident
 
     
 

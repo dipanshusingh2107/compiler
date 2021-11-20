@@ -1,4 +1,3 @@
-from enum import Flag
 from tokens import TokenType
 import sys
 
@@ -20,7 +19,7 @@ class Parser():
     def currText(self):
         return self.text[self.currTokenPos]
     
-    def getToken(self , pos = 0):   #this is also crap
+    def getToken(self , pos = 0):   #this is not needed NOT USED
         if self.currTokenPos+pos >= self.numberOfTokens:
             return False
         return self.token[self.currTokenPos + pos]
@@ -72,6 +71,8 @@ class Parser():
                 if self.currToken() != TokenType.NEWLINE:
                     print("Token Found " ,self.currToken())
                     sys.exit('SYNTAX ERROR New line not found after Expression')
+                # if newline is found then it will automatically be handeled 
+                # by self.nl() in next statement
                     
         else:
             print("Token Found " ,self.currToken())
@@ -112,15 +113,15 @@ class Parser():
         print("CHECKING UNARY")
         if(self.primary()):
             return True
-        elif self.currToken() == TokenType.PLUS or self.currToken() == TokenType.MINUS:
-            print("Token Found " ,self.currToken())
-            self.out+= self.currText()
-            self.increasePos()
-            if (self.primary()):
-                return True
-            else:
-                sys.exit('SYNTAX ERROR NOT A UNIARY')
-                return False
+        # elif self.currToken() == TokenType.PLUS or self.currToken() == TokenType.MINUS:
+        #     print("Token Found " ,self.currToken())
+        #     self.out+= self.currText()
+        #     self.increasePos()
+        #     if (self.primary()):
+        #         return True
+        #     else:
+        #         sys.exit('SYNTAX ERROR NOT A UNIARY')
+        #         return False
         else:
             sys.exit('SYNTAX ERROR UNARY NOT FOUND')
             return False

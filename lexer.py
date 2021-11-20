@@ -21,10 +21,13 @@ class Lexer():
         return None
         
     def getIdentifierEnd(self):
-        pos = self.currPos-1
-        if not self.currChar().isalpha():
+        # as we check for keyword before the identifier no need
+        # to check if first alphabet is of Keyword or not
+        
+        if not self.currChar().isalpha():   #check curr char is an alphabet
             return None
-
+        
+        pos = self.currPos-1
         while(pos+1 < self.length):
             if self.input[pos+1].isalnum() and self.keywordStart(pos+1) == False:
                 pos = pos+1
@@ -38,10 +41,10 @@ class Lexer():
     
 
     def getNumberEnd(self):
-        pos = self.currPos -1
         if not self.currChar().isdigit():
             return None
 
+        pos = self.currPos -1
         while pos < self.length-1:
             if self.input[pos+1].isdigit():
                 pos = pos+1
@@ -113,7 +116,7 @@ class Lexer():
                 lexeme.append(TokenType.NEWLINE)
                 text.append("\n")
                 self.posIncrement()
-            elif self.currChar() == "\"":
+            elif self.currChar() == "\"":   #checking for string quotation marks " "
                 pos = self.findNext("\"" , self.currPos+1)
                 if pos != None:
                     lexeme.append(TokenType.STRING)
@@ -239,7 +242,9 @@ def main():
     data+= '\n'
 
     lex = Lexer(data)
-    for i in lex.getLexeme():
+    token , text = lex.getLexeme()
+    
+    for i in token:
         print(i)
 
 if __name__ == "__main__":
